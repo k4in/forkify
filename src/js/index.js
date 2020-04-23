@@ -37,7 +37,7 @@ const controlSearch = async () => {
             clearLoader();
             searchView.renderResults(state.search.recipes);
         } catch (error) {
-            alert("Something went wrong with the search");
+            alert("Something went wrong with the search!");
             clearLoader();
         }
 

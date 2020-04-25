@@ -4,6 +4,7 @@ import axios from "axios";
 import Search from "./models/Search";
 import Recipe from "./models/Recipe";
 import * as searchView from "./views/searchView";
+import * as recipeView from "./views/recipeView";
 import { elements, renderLoader, clearLoader } from "./views/base";
 
 /** Global state of the app
@@ -19,6 +20,7 @@ const state = {}
 const controlSearch = async () => {
     // 1) Get query from searchView
     const searchQuery = searchView.getInput();
+    //const searchQuery = "pasta"; /// JUST FOR TESTING
 
     if (searchQuery) {
         // 2) Create Search Object and add to state
@@ -56,17 +58,22 @@ const controlRecipe = async () => {
         state.recipe = new Recipe(id);
 
         // 3) prepare UI for changes
+        recipeView.clearRecipe();
+        renderLoader(elements.recipeBox);
 
         try {
-            // 4) Get Recipe data
+            // 4) Get Recipe data and parse ingredients
             await state.recipe.getRecipe();
+            state.recipe.parseIngredients();
 
             // 5) Calculate servings and time
             state.recipe.calcTime();
             state.recipe.calcServings();
 
             // 6) Render recipe
-            console.log(state.recipe);
+            clearLoader();
+            recipeView.renderRecipe(state.recipe);
+
         } catch (error) {
             alert("Error processing recipe!");
         }
